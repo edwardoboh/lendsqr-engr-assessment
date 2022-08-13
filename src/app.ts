@@ -1,20 +1,22 @@
 import * as dotenv from 'dotenv'
 dotenv.config({ path: __dirname + '/../.env' });
 
-import config from './config'
+import config from './config/app';
 import express from 'express';
 import * as http from 'http';
-
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
-
 import cors from 'cors';
 import debug from 'debug';
 
+import { CommonRoutesConfig } from './common';
+import { UserRoutes } from './users/user.routes.config';
+
 const app: express.Application = express();
+const router = express.Router()
 const server: http.Server = http.createServer(app);
 const port = config.port;
-const routes: Array<String> = [];
+const routes: Array<CommonRoutesConfig> = [];
 const debugLog: debug.IDebugger = debug('app');
 
 app.use(express.json());
@@ -29,17 +31,21 @@ const loggerOptions: expressWinston.LoggerOptions = {
     )
 }
 
-if (config.debug) {
-    loggerOptions.meta = false;
-}
+if (config.debug) { loggerOptions.meta = false }
 
 app.use(expressWinston.logger(loggerOptions));
-// routes.push[AllRoutes]
+app.use(config.prefix, router);
+
 app.get('/', (request: express.Request, response: express.Response) => {
     response.send("Server Healthy");
 });
 
+routes.push(new UserRoutes(router));
+
 server.listen(port, () => {
-    // output message for each configured route
+    routes.forEach((route: CommonRoutesConfig) => {
+        debugLog(`Configuring..Route: ${route.getName()}`);
+        route.configureRoutes()
+    })
     console.log(`Server running on port: ${port}`);
 });
