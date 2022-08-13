@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+  database:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: lendsqrDB
+      MYSQL_USER: lendsqr
+      MYSQL_PASSWORD: lendsqr-engr
+    ports:
+      - 3306:3306
+    volumes:
+      - lendsqr-volume:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  lendsqr-volume:
+    external: false
