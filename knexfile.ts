@@ -1,5 +1,5 @@
 import type { Knex } from "knex";
-import dbConfig from "../../config/database";
+import dbConfig from "./src/config/database";
 
 const {
   client, database, host, password, user
@@ -7,7 +7,7 @@ const {
 
 const config: { [key: string]: Knex.Config } = {
   development: {
-    client: 'mysql2',
+    client,
     connection: {
       database,
       user,
@@ -19,7 +19,8 @@ const config: { [key: string]: Knex.Config } = {
       max: 10
     },
     migrations: {
-      tableName: 'knex_migrations'
+      tableName: 'knex_migrations',
+      directory: './src/database/migrations'
     }
   },
 
@@ -36,7 +37,9 @@ const config: { [key: string]: Knex.Config } = {
       max: 10
     },
     migrations: {
-      tableName: 'knex_migrations'
+      tableName: 'knex_migrations',
+      directory: './src/database/migrations',
+      extension: 'ts'
     }
   }
 };
