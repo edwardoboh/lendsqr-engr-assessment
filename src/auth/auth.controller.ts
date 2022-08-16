@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { read } from 'fs';
 class AuthController {
 
     async loginUser(req: Request, res: Response) {
@@ -11,6 +12,10 @@ class AuthController {
 
     async whoIsUser(req: Request, res: Response) {
         res.send("You are the user");
+    }
+
+    async verifyPin(req: Request, res: Response) {
+        res.send("Check pin");
     }
 }
 
