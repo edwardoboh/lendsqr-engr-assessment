@@ -6,20 +6,15 @@ import httpCodes from "../common/httpCodes";
 class AccountController {
 
     async getAccountDetails(req: Request, res: Response) {
-        const { by, account_id, account_number } = req.body
+        const { account_number } = req.user
 
-        let resp;
-        if (by == 'id') {
-            resp = await AccountService.fetchAccountById(account_id)
-        } else {
-            resp = await AccountService.fetchAccountByNumber(account_number)
-        }
+        let resp = await AccountService.fetchAccountByNumber(account_number)
 
         res.status(httpCodes.OK).json(resp)
     }
 
     async getAccountTransfers(req: Request, res: Response) {
-        const { account_number } = req.params
+        const { account_number } = req.user
 
         const resp = await AccountService.fetchAccountTransfers(account_number)
 
@@ -27,7 +22,7 @@ class AccountController {
     }
 
     async getAccountWithdrawals(req: Request, res: Response) {
-        const { account_number } = req.params
+        const { account_number } = req.user
 
         const resp = await AccountService.fetchAccountWithdrawals(account_number)
 
@@ -35,7 +30,7 @@ class AccountController {
     }
 
     async getAccountDeposits(req: Request, res: Response) {
-        const { account_number } = req.params
+        const { account_number } = req.user
 
         const resp = await AccountService.fetchAccountDeposits(account_number)
 
