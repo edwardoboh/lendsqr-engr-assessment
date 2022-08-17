@@ -22,8 +22,6 @@ The document is divided into several sections, listed below
 
 ## **High Level System Design**
 
----
-
 The diagram below shows the various components of the system as can be infered from its requirements.
 
 ![high level diagram](https://res.cloudinary.com/class-attend/image/upload/v1660737498/class-attend/high_level_diagram_gllicu.jpg)
@@ -36,8 +34,6 @@ There exists a DNS server that routes user request to our system, a Load Balance
 The database system used here is MySQL. For my implementation of this system, this database runs inside of a Docker Container and the Docker Compose file can be found in the root of the project folder.
 
 ## **Design Assumptions**
-
----
 
 - A Wallet is automatically created for a user on sign up, this holds the user's assets
 - A user must first set an account pin to authorize transfers before any transfer can be performed
@@ -57,8 +53,6 @@ The database system used here is MySQL. For my implementation of this system, th
   - a user cannot send funds directly to another user's bank account
 
 ## **Implementation Details**
-
----
 
 The major features of the app,
 
@@ -113,8 +107,6 @@ These put together gives us the following transaction types:
 
 ## **Database Models**
 
----
-
 This section describes the various tables inwhich data is stored and the relationship between them. Below an image showing the tables.
 ![Database Schema](https://res.cloudinary.com/class-attend/image/upload/v1660737296/class-attend/db_schema_diagram_m5w65w.png)
 
@@ -159,13 +151,9 @@ This table has a **one-to-one** relationship with the transactions table, as a s
 
 ## **Data Flow Diagram**
 
----
-
 In this section, i will demonstrate how data flows across the system, from users, through server to database and back using the flowchart diagram below.
 
 ## **APENDIX**
-
----
 
 ### **Project Folder Structure**
 
