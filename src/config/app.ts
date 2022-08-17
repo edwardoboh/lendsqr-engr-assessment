@@ -24,6 +24,11 @@ export const payment_integration = {
     secret_key: process.env.PAYSTACK_SECRET_KEY,
     verification_url: 'https://api.paystack.co/transaction/verify/'
 }
+
+export const transfer_status = {
+    SUCCESS: 'SUCCESS',
+    FAILED: 'FAILED'
+}
 /**
  * This configuration would actually be pulled from the database on application launch
  * Pulling from a static file is only used here for simplicity

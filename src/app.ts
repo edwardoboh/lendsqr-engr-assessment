@@ -6,14 +6,23 @@ import express from 'express';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
 import cors from 'cors';
+
 import { CommonRoutesConfig } from './common';
+import { AuthRoutes } from './auth/auth.routes.config';
 import { UserRoutes } from './users/user.routes.config';
+import { AccountRoutes } from './account/account.routes.config';
+import { TransactionRoute } from './transaction/transaction.route.config';
 
 export default function App() {
 
     const app: express.Application = express();
     const router = express.Router()
-    const routes: Array<CommonRoutesConfig> = [];
+    const routes: Array<CommonRoutesConfig> = [
+        new AuthRoutes(router),
+        new UserRoutes(router),
+        new AccountRoutes(router),
+        new TransactionRoute(router)
+    ];
 
     app.use(express.json());
     app.use(cors());
@@ -34,8 +43,6 @@ export default function App() {
     app.get('/', (request: express.Request, response: express.Response) => {
         response.send("Server Healthy");
     });
-
-    routes.push(new UserRoutes(router));
 
     return {
         app,

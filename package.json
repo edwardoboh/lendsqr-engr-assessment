@@ -2,17 +2,18 @@
   "name": "lendsqr-engr-assessment",
   "version": "1.0.0",
   "description": "Solution to the Lendsqr Backend Engineering Assessment by Edward Oboh (@edwardoboh)",
-  "main": "src/app.ts",
+  "main": "src/server.ts",
   "author": "Edward Oboh",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/app.js",
-    "start:dev": "ts-node-dev --respawn --clear --transpile-only --ignore-watch node_modules src/app.ts",
+    "start": "node ./dist/server.js",
+    "start:dev": "ts-node-dev --respawn --clear --transpile-only --ignore-watch node_modules src/server.ts",
     "start:debug": "export DEBUG=* && tsc && node ./dist/app.js --unhandled-rejections=strict",
-    "test": ""
+    "test": "jest"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "cors": "^2.8.5",
     "debug": "^4.3.4",
     "dotenv": "^16.0.1",
