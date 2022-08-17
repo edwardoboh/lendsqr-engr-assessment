@@ -1,11 +1,11 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import AccountService from "./account.service";
 import PaymentService from '../payment/payment.service';
 import httpCodes from "../common/httpCodes";
 
 class AccountController {
 
-    async getAccountDetails(req: Request, res: Response) {
+    async getAccountDetails(req: Request, res: Response, next: NextFunction) {
         const { account_number } = req.user
 
         let resp = await AccountService.fetchAccountByNumber(account_number)
@@ -13,7 +13,7 @@ class AccountController {
         res.status(httpCodes.OK).json(resp)
     }
 
-    async getAccountTransfers(req: Request, res: Response) {
+    async getAccountTransfers(req: Request, res: Response, next: NextFunction) {
         const { account_number } = req.user
 
         const resp = await AccountService.fetchAccountTransfers(account_number)
@@ -21,7 +21,7 @@ class AccountController {
         res.status(httpCodes.OK).json(resp)
     }
 
-    async getAccountWithdrawals(req: Request, res: Response) {
+    async getAccountWithdrawals(req: Request, res: Response, next: NextFunction) {
         const { account_number } = req.user
 
         const resp = await AccountService.fetchAccountWithdrawals(account_number)
@@ -29,7 +29,7 @@ class AccountController {
         res.status(httpCodes.OK).json(resp)
     }
 
-    async getAccountDeposits(req: Request, res: Response) {
+    async getAccountDeposits(req: Request, res: Response, next: NextFunction) {
         const { account_number } = req.user
 
         const resp = await AccountService.fetchAccountDeposits(account_number)
@@ -37,7 +37,7 @@ class AccountController {
         res.status(httpCodes.OK).json(resp)
     }
 
-    async transferFundsToUser(req: Request, res: Response) {
+    async transferFundsToUser(req: Request, res: Response, next: NextFunction) {
         const {
             from_account_number,
             to_account_number,
@@ -48,7 +48,7 @@ class AccountController {
         res.status(httpCodes.CREATED).json(resp)
     }
 
-    async fundAccount(req: Request, res: Response) {
+    async fundAccount(req: Request, res: Response, next: NextFunction) {
         const { payment_reference, username, account_number } = req.body
 
         const valid_payment = await PaymentService.verifyPayment(payment_reference)
@@ -62,7 +62,7 @@ class AccountController {
         res.status(httpCodes.CREATED).json({ payment, updated_account })
     }
 
-    async wihtdrawFunds(req: Request, res: Response) {
+    async wihtdrawFunds(req: Request, res: Response, next: NextFunction) {
         const { bank_account_number, bank_code, amount, account_number } = req.body
 
         const withdrawal_resp = await AccountService.withdrawFromAccount({ amount, account_number })

@@ -2,6 +2,7 @@ import * as http from 'http';
 import config from './config/app';
 import App from './app';
 import debug from 'debug';
+import CommonErrorMiddleware from './common/middleware/common.error.middleware';
 
 const { app, routes } = App()
 
@@ -14,5 +15,7 @@ server.listen(port, () => {
         debugLog(`Configuring..Route: ${route.getName()}`);
         route.configureRoutes()
     })
+    app.use(CommonErrorMiddleware.handleServerError)
+    app.use(CommonErrorMiddleware.handleRouteNotFound)
     console.log(`Server running on port: ${port}`);
 });

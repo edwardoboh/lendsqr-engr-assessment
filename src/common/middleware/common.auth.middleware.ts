@@ -5,16 +5,15 @@ class CommonAuthMiddleware {
         // This function to be implemeted later if time permits
         console.log("Token Tada!!")
         const token = req.headers.authorization?.split(' ')[1]
-        const tokenValid = true;
-        if (tokenValid) {
+        if (token) {
             req.user = {
-                id: 1,
-                username: "edwardoboh",
-                email: "obohedwardoboh",
+                id: token.slice(-1),
+                username: "sample_username",
+                email: "sample@email.com",
                 account_number: "6152321298"
             }
 
-            next();
+            return next();
         }
         throw new Error('Invalid Token string')
     }

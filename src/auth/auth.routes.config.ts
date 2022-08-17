@@ -1,5 +1,8 @@
 import express from 'express';
 import { CommonRoutesConfig } from "../common";
+import AuthController from './auth.controller'
+import commonAuthMiddleware from '../common/middleware/common.auth.middleware';
+import AuthMiddleware from './middleware/auth.middleware';
 
 export class AuthRoutes extends CommonRoutesConfig {
     constructor(router: express.Router) {
@@ -9,15 +12,25 @@ export class AuthRoutes extends CommonRoutesConfig {
     configureRoutes(): express.Router {
         this.router
             .route('/whoami')
-            .get()
+            .get([
+                commonAuthMiddleware.dataFromToken,
+                AuthController.whoIsUser
+            ])
 
         this.router
             .route('/login')
-            .post()
+            .post([
+                AuthMiddleware.validateUserLogin,
+                AuthController.loginUser
+            ])
 
         this.router
             .route('/signup')
-            .post()
+            .post([
+                AuthMiddleware.validateUserRegister,
+                AuthMiddleware.validateUniqueEmailAndUsername,
+                AuthController.signupUser
+            ])
 
         this.router
             .route('pin')

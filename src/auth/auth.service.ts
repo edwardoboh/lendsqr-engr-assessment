@@ -1,4 +1,5 @@
 import usersService from "../users/users.service";
+
 class AuthService {
     async login(credentials: { email: string, password: string }) {
         const { email, password } = credentials;
@@ -6,20 +7,18 @@ class AuthService {
         // compare password with supplied password
         // return throw error on fail
         // return token on success
-        return { token: "", user }
+        return { token: `sample_token_${user?.id}`, user }
     }
 
     async register(userData: any) {
         const user = await usersService.createUser(userData);
-        return { token: "", user }
+        return { token: `sample_token_${user[0]}`, user }
     }
 
-    async whoami(token: string) {
-        // decrypt token
-        // get user id
-        let userId = "";
+    async whoami(userId: string) {
         const user = await usersService.getUserById(userId);
-        return { token, user }
+        if (!user) return null;
+        return { user }
     }
 }
 

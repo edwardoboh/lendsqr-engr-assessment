@@ -1,20 +1,28 @@
-import { Request, Response } from 'express';
-import { read } from 'fs';
+import { NextFunction, Request, Response } from 'express';
+import AuthService from './auth.service'
+import httpCodes from '../common/httpCodes';
 class AuthController {
 
-    async loginUser(req: Request, res: Response) {
-        res.send("Login");
+    async loginUser(req: Request, res: Response, next: NextFunction) {
+        const { email, password } = req.body
+        const resp = await AuthService.login({ email, password })
+        res.status(httpCodes.OK).json(resp)
     }
 
-    async signupUser(req: Request, res: Response) {
-        res.send("SignUp");
+    async signupUser(req: Request, res: Response, next: NextFunction) {
+        const newUser = req.body
+        const resp = await AuthService.register(newUser)
+        res.status(httpCodes.CREATED).json(resp)
     }
 
-    async whoIsUser(req: Request, res: Response) {
-        res.send("You are the user");
+    async whoIsUser(req: Request, res: Response, next: NextFunction) {
+        const { id: userId } = req.user
+        const resp = await AuthService.whoami(userId)
+        if (!resp) next(new Error('User not found'))
+        res.status(httpCodes.OK).json(resp)
     }
 
-    async verifyPin(req: Request, res: Response) {
+    async verifyPin(req: Request, res: Response, next: NextFunction) {
         res.send("Check pin");
     }
 }

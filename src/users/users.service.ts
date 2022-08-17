@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
 import knex from '../database';
+import _ from 'lodash'
 class UserService {
     User: Knex.QueryBuilder<any, any>;
 
@@ -12,11 +13,21 @@ class UserService {
     }
 
     async getUserById(id: string) {
-        return this.User.select().where('id', id).first();
+        const user = await this.User.select().where('id', id);
+        if (!user.length) return null;
+        return _.pick(user[0], 'username', 'email', 'id', 'first_name', 'last_name', 'phone_number');
     }
 
     async getUserByEmail(email: string) {
-        return this.User.select().where({ email }).first()
+        const user = await this.User.select().where({ email })
+        if (!user.length) return null;
+        return _.pick(user[0], 'username', 'email', 'id', 'first_name', 'last_name', 'phone_number');
+    }
+
+    async getUserByUsername(username: string) {
+        const user = await this.User.select().where({ username })
+        if (!user.length) return null;
+        return _.pick(user[0], 'username', 'email', 'id', 'first_name', 'last_name', 'phone_number');
     }
 
     async createUser(user: {}) {
