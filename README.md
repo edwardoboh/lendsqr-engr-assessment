@@ -26,7 +26,7 @@ The document is divided into several sections, listed below
 
 The diagram below shows the various components of the system as can be infered from its requirements.
 
-![high level diagram](https://drive.google.com/uc?export=download&id=1KPAnEGiRBBq0teTs7cTgUAjxucKj27ot)
+![high level diagram](https://res.cloudinary.com/class-attend/image/upload/v1660737498/class-attend/high_level_diagram_gllicu.jpg)
 
 The API services users request from both mobile and web platforms.The diagram above is a simplified representation of the system.
 In reality, several components exist between those shown. For example,
@@ -116,7 +116,7 @@ These put together gives us the following transaction types:
 ---
 
 This section describes the various tables inwhich data is stored and the relationship between them. Below an image showing the tables.
-![Database Schema](https://drive.google.com/uc?export=download&id=10TNeeZ9QkL5yzRQ2k3hhvTyD-FjUdbW7)
+![Database Schema](https://res.cloudinary.com/class-attend/image/upload/v1660737296/class-attend/db_schema_diagram_m5w65w.png)
 
 > Note that the diagram does not explicitly specify the relationship that exists between the tables
 
@@ -171,4 +171,4 @@ In this section, i will demonstrate how data flows across the system, from users
 
 This section describes the structure of the files/folders which hold the project code.
 
-![Project folder structure](https://drive.google.com/uc?export=download&id=1AeGsjrjIPvXGxgQaeCl_-W_5l8D9WaGg)
+![Project folder structure](https://res.cloudinary.com/class-attend/image/upload/v1660737309/class-attend/Screenshot_from_2022-08-17_12-42-01_gt7znc.png)
