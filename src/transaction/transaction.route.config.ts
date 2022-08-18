@@ -1,5 +1,6 @@
 import { CommonRoutesConfig } from "../common/common.routes.config";
 import { Router } from 'express'
+import TransactionController from "./transaction.controller";
 
 export class TransactionRoute extends CommonRoutesConfig {
     constructor(router: Router) {
@@ -9,8 +10,7 @@ export class TransactionRoute extends CommonRoutesConfig {
     configureRoutes(): Router {
         this.router
             .route('/transactions')
-            .get()
-            .post()
+            .get(TransactionController.getAccountTransactions)
 
         return this.router
     }

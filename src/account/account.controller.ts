@@ -5,6 +5,12 @@ import httpCodes from "../common/httpCodes";
 
 class AccountController {
 
+    async getAllAccounts(req: Request, res: Response, next: NextFunction) {
+        let accounts = await AccountService.fetchAllAccounts()
+
+        res.status(httpCodes.OK).json(accounts)
+    }
+
     async getAccountDetails(req: Request, res: Response, next: NextFunction) {
         const { account_number } = req.user
 
@@ -17,25 +23,25 @@ class AccountController {
     async getAccountTransfers(req: Request, res: Response, next: NextFunction) {
         const { account_number } = req.user
 
-        const resp = await AccountService.fetchAccountTransfers(account_number)
+        const transfers = await AccountService.fetchAccountTransfers(account_number)
 
-        res.status(httpCodes.OK).json(resp)
+        res.status(httpCodes.OK).json({ transfers })
     }
 
     async getAccountWithdrawals(req: Request, res: Response, next: NextFunction) {
         const { account_number } = req.user
 
-        const resp = await AccountService.fetchAccountWithdrawals(account_number)
+        const withdrawals = await AccountService.fetchAccountWithdrawals(account_number)
 
-        res.status(httpCodes.OK).json(resp)
+        res.status(httpCodes.OK).json({ withdrawals })
     }
 
     async getAccountDeposits(req: Request, res: Response, next: NextFunction) {
         const { account_number } = req.user
 
-        const resp = await AccountService.fetchAccountDeposits(account_number)
+        const deposits = await AccountService.fetchAccountDeposits(account_number)
 
-        res.status(httpCodes.OK).json(resp)
+        res.status(httpCodes.OK).json({ deposits })
     }
 
     async transferFundsToUser(req: Request, res: Response, next: NextFunction) {

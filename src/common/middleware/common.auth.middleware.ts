@@ -31,7 +31,6 @@ class CommonAuthMiddleware {
     tokenVerifyWrapper(middleware: any) {
         const paths = config.getOpenRoutes()
         return function (req: Request, res: Response, next: NextFunction) {
-            console.log(req.url)
             if (paths.includes(req.url)) {
                 return next();
             } else {

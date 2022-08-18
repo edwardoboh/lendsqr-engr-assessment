@@ -10,6 +10,10 @@ export class AccountRoutes extends CommonRoutesConfig {
 
     configureRoutes(): express.Router {
         this.router
+            .route('/accounts/all')
+            .get([AccountController.getAllAccounts])
+
+        this.router
             .route('/accounts')
             .get([
                 AccountController.getAccountDetails
@@ -20,6 +24,7 @@ export class AccountRoutes extends CommonRoutesConfig {
             .get([AccountController.getAccountTransfers])
             .post([
                 AccountMiddleware.validateAccountTransfer,
+                AccountMiddleware.secureAccountTransfer,
                 AccountController.transferFundsToUser
             ])
 

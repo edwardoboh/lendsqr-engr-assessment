@@ -1,13 +1,24 @@
 import { Request, Response, NextFunction } from 'express'
+import Joi from 'joi'
 class AccountMiddleware {
     validateAccountTransfer(req: Request, res: Response, next: NextFunction) {
-        // Function to validate request body
-        const error = false
+        const requestBody = req.body;
+
+        const schema = Joi.object({
+            amount: Joi.number().positive().required(),
+            pin: Joi.string().required(),
+            to_account_number: Joi.string().required(),
+        })
+
+        const { error } = schema.validate(requestBody, { abortEarly: false })
         if (error) {
-            throw new Error("Error in request body")
-        } else {
-            next()
+            const errorMessage = error.details.map(detail => detail.message)
+            throw new Error(`${errorMessage}`)
         }
+        const { account_number } = req.user
+        req.body['from_account_number'] = account_number
+
+        next();
     }
 
     validateFundAccount(req: Request, res: Response, next: NextFunction) {
@@ -38,6 +49,16 @@ class AccountMiddleware {
 
     async secureAccountTransfer(req: Request, res: Response, next: NextFunction) {
         // Ensure transfer is intiated by account owner
+        const { pin, from_account_number, to_account_number } = req.body
+        const { id } = req.user
+        // Get user from token
+        // Authorize with user pin: To be implemented later
+
+        // user cannot transfer to themselves
+        if (from_account_number == to_account_number) {
+            next(new Error("You Cannot transfer funds to Yourself"))
+        }
+        next();
 
     }
 }

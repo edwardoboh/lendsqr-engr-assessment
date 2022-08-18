@@ -14,7 +14,7 @@ class AccountService {
     constructor() {
         this.log = logger('account service:')
         this.Account = knex('accounts')
-        this.Transfer = knex('transfer')
+        this.Transfer = knex('transfers')
         this.DepositWithdrawal = knex('deposit_and_withdrawals')
     }
 
@@ -41,7 +41,7 @@ class AccountService {
         if (!account.length) {
             return null
         }
-        return account
+        return account[0]
     }
 
     async fetchAccountByUser(user_id: string): Promise<any> {
@@ -49,7 +49,7 @@ class AccountService {
         if (!account.length) {
             return null
         }
-        return account
+        return account[0]
     }
 
     async fetchAccountByNumber(account_number: string): Promise<any> {
@@ -57,11 +57,11 @@ class AccountService {
         if (!account.length) {
             return null
         }
-        return account
+        return account[0]
     }
 
     async fetchAccountTransfers(account_number: string): Promise<any> {
-        return this.Transfer.select().where({ account_number });
+        return this.Transfer.select().where({ from_account_number: account_number });
     }
 
     async fetchAccountWithdrawals(account_number: string): Promise<any> {

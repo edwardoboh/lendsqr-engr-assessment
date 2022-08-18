@@ -17,8 +17,8 @@ class TransactionService {
 
     }
 
-    async fetchAccountTransactions() {
-
+    async fetchAccountTransactions(user_id: string) {
+        return this.Transaction.select().where({ user_id })
     }
 
     async createTransaction(newTransactions: any[]) {
