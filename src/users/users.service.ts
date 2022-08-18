@@ -21,7 +21,7 @@ class UserService {
     async getUserByEmail(email: string) {
         const user = await this.User.select().where({ email })
         if (!user.length) return null;
-        return _.pick(user[0], 'username', 'email', 'id', 'first_name', 'last_name', 'phone_number');
+        return _.pick(user[0], 'username', 'email', 'id', 'first_name', 'last_name', 'phone_number', 'password');
     }
 
     async getUserByUsername(username: string) {

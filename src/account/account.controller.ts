@@ -9,6 +9,7 @@ class AccountController {
         const { account_number } = req.user
 
         let resp = await AccountService.fetchAccountByNumber(account_number)
+        if (!resp) next(new Error("Invalid Account number"))
 
         res.status(httpCodes.OK).json(resp)
     }

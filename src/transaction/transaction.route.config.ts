@@ -1,4 +1,4 @@
-import { CommonRoutesConfig } from "../common";
+import { CommonRoutesConfig } from "../common/common.routes.config";
 import { Router } from 'express'
 
 export class TransactionRoute extends CommonRoutesConfig {

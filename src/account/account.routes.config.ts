@@ -1,6 +1,5 @@
 import express from "express";
-import { CommonRoutesConfig } from "../common";
-import CommonAuthMiddleware from "../common/middleware/common.auth.middleware";
+import { CommonRoutesConfig } from "../common/common.routes.config";
 import AccountController from './account.controller';
 import AccountMiddleware from "./middleware/account.middleware";
 
@@ -12,7 +11,6 @@ export class AccountRoutes extends CommonRoutesConfig {
     configureRoutes(): express.Router {
         this.router
             .route('/accounts')
-            .all(CommonAuthMiddleware.dataFromToken)
             .get([
                 AccountController.getAccountDetails
             ])

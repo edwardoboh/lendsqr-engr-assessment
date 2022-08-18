@@ -18,6 +18,16 @@ class AccountService {
         this.DepositWithdrawal = knex('deposit_and_withdrawals')
     }
 
+    generateAccountNumber() {
+        // generates a 10 digit account number
+        return Math.floor(((Math.random() * 10000000000 + 1000000000) % 10000000000)).toString()
+    }
+
+    async createAccont(user_id: number): Promise<any> {
+        const account_number = this.generateAccountNumber()
+        return this.Account.insert({ user_id, account_number })
+    }
+
     async fetchAllAccounts(): Promise<any> {
         return this.Account.select();
     }
@@ -27,11 +37,27 @@ class AccountService {
     }
 
     async fetchAccountById(id: string): Promise<any> {
-        return this.Account.select().where('id', id).first();
+        const account = await this.Account.select().where('id', id);
+        if (!account.length) {
+            return null
+        }
+        return account
+    }
+
+    async fetchAccountByUser(user_id: string): Promise<any> {
+        const account = await this.Account.select().where({ user_id });
+        if (!account.length) {
+            return null
+        }
+        return account
     }
 
     async fetchAccountByNumber(account_number: string): Promise<any> {
-        return this.Account.select().where({ account_number }).first();
+        const account = await this.Account.select().where({ account_number });
+        if (!account.length) {
+            return null
+        }
+        return account
     }
 
     async fetchAccountTransfers(account_number: string): Promise<any> {

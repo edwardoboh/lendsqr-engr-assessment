@@ -35,6 +35,11 @@ class AccountMiddleware {
             next()
         }
     }
+
+    async secureAccountTransfer(req: Request, res: Response, next: NextFunction) {
+        // Ensure transfer is intiated by account owner
+
+    }
 }
 
 export default new AccountMiddleware();

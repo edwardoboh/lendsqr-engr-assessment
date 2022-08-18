@@ -6,6 +6,7 @@ class AuthController {
     async loginUser(req: Request, res: Response, next: NextFunction) {
         const { email, password } = req.body
         const resp = await AuthService.login({ email, password })
+        if (!resp) return next(new Error("Invalid login credentials"))
         res.status(httpCodes.OK).json(resp)
     }
 

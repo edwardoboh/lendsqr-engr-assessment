@@ -7,11 +7,12 @@ import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
 import cors from 'cors';
 
-import { CommonRoutesConfig } from './common';
+import { CommonRoutesConfig } from './common/common.routes.config';
 import { AuthRoutes } from './auth/auth.routes.config';
 import { UserRoutes } from './users/user.routes.config';
 import { AccountRoutes } from './account/account.routes.config';
 import { TransactionRoute } from './transaction/transaction.route.config';
+import commonAuthMiddleware from './common/middleware/common.auth.middleware';
 
 export default function App() {
 
@@ -38,6 +39,10 @@ export default function App() {
     if (config.debug) { loggerOptions.meta = false }
 
     app.use(expressWinston.logger(loggerOptions));
+    app.use(
+        commonAuthMiddleware.tokenVerifyWrapper(
+            commonAuthMiddleware.dataFromToken
+        ))
     app.use(config.prefix, router);
 
     app.get('/', (request: express.Request, response: express.Response) => {
