@@ -12,6 +12,7 @@ class AuthController {
 
     async signupUser(req: Request, res: Response, next: NextFunction) {
         const newUser = req.body
+        console.log({ newUser })
         const resp = await AuthService.register(newUser)
         res.status(httpCodes.CREATED).json(resp)
     }
@@ -28,4 +29,4 @@ class AuthController {
     }
 }
 
-export default new AuthController;
+export default new AuthController();

@@ -30,11 +30,11 @@ class UserService {
         return _.pick(user[0], 'username', 'email', 'id', 'first_name', 'last_name', 'phone_number');
     }
 
-    async createUser(user: {}) {
+    async createUser(user: any) {
         return this.User.insert(user);
     }
 
-    async updateUser(user: { id: string }) {
+    async updateUser(user: any) {
         return this.User.where({ id: user.id }).update(user);
     }
 

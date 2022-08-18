@@ -24,7 +24,7 @@ class AuthService {
     async register(userData: any) {
         const user = await usersService.createUser(userData);
         const account = await AccountService.createAccont(user[0])
-        return { token: `sample_token_${user[0]}`, user, }
+        return { user, account }
     }
 
     async whoami(userId: string) {
