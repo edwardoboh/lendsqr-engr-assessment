@@ -73,73 +73,71 @@ class AccountService {
     }
 
     // Transfer funds from one user's account into another
-    async transferToAccount(transferData: any): Promise<any> {
+    async transferToAccount(transferData: any) {
         const {
             from_account_number,
             to_account_number,
-            amount
+            amount: transfer_amount
         } = transferData
-
 
         try {
 
-            await knex.transaction(async (transact) => {
-                const [from_account, to_account] = await Promise.all([
-                    this.Account.select()
-                        .where({ account_number: from_account_number })
-                        .first()
-                        .transacting(transact),
-                    this.Account.select()
-                        .where({ account_number: to_account_number })
-                        .first()
-                        .transacting(transact)
-                ])
+            const transact = await knex.transaction()
 
-                if (from_account.balance < amount) {
-                    throw new Error("Insufficient Balance to make transfer")
-                }
+            let from_account = await transact('accounts')
+                .select()
+                .where({ account_number: from_account_number }).first()
+            let to_account = await transact('accounts')
+                .select()
+                .where({ account_number: to_account_number }).first()
 
-                let from_new_balance = from_account.balance - amount
-                let to_new_balance = to_account.balance + amount
+            const amount = parseInt(transfer_amount);
+            const from_account_balance = parseFloat(from_account.balance)
+            const to_account_balance = parseFloat(to_account.balance)
 
-                const [new_from_account, new_to_account] = await Promise.all([
-                    this.Account.where({ account_number: from_account_number })
-                        .update(
-                            { balance: from_new_balance },
-                            ['id', 'balance', 'account_number']
-                        )
-                        .first()
-                        .transacting(transact),
-                    this.Account.where({ account_number: to_account_number })
-                        .update(
-                            { balance: to_new_balance },
-                            ['id', 'balance', 'account_number']
-                        )
-                        .first()
-                        .transacting(transact)
-                ])
+            if (from_account_balance < amount) {
+                throw new Error("Insufficient Balance to make transfer")
+            }
 
-                // Use events to:
-                // create a transfer entry in the transfer table
-                // create two transactions for each user - CREDIT and DEBIT
-                await TransactionService.createTransaction([{
-                    account_id: from_account.id,
-                    user_id: from_account.user_id,
-                    transaction_type: TType.DEBIT_TRANSFER,
-                    transaction_data: JSON.stringify({ from_account, to_account, new_from_account, new_to_account }),
-                    balance_before: from_account.balance,
-                    balance_after: new_from_account.balance
-                }, {
-                    account_id: to_account.id,
-                    user_id: to_account.user_id,
-                    transaction_type: TType.CREDIT_RECIEVE,
-                    transaction_data: JSON.stringify({ from_account, to_account, new_from_account, new_to_account }),
-                    balance_before: to_account.balance,
-                    balance_after: new_to_account.balance
-                }])
+            let from_new_balance = from_account_balance - amount
+            let to_new_balance = to_account_balance + amount
+            let new_from_account, new_to_account;
 
-                return { from_account, to_account, new_from_account, new_to_account }
-            })
+            try {
+                await transact('accounts').where({ account_number: from_account_number })
+                    .update({ balance: from_new_balance })
+                await transact('accounts').where({ account_number: to_account_number })
+                    .update({ balance: to_new_balance })
+
+                new_from_account = await transact('accounts').select().where({ account_number: from_account_number }).first()
+                new_to_account = await transact('accounts').select().where({ account_number: to_account_number }).first()
+
+                transact.commit()
+            } catch (error: any) {
+                transact.rollback()
+            } finally {
+            }
+
+
+            // Use events to:
+            // create a transfer entry in the transfer table
+            // create two transactions for each user - CREDIT and DEBIT
+            await TransactionService.createTransaction([{
+                account_id: from_account.id,
+                user_id: from_account.user_id,
+                transaction_type: TType.DEBIT_TRANSFER,
+                transaction_data: JSON.stringify({ from_account, to_account, new_from_account, new_to_account }),
+                balance_before: from_account.balance,
+                balance_after: new_from_account?.balance || from_new_balance
+            }, {
+                account_id: to_account.id,
+                user_id: to_account.user_id,
+                transaction_type: TType.CREDIT_RECIEVE,
+                transaction_data: JSON.stringify({ from_account, to_account, new_from_account, new_to_account }),
+                balance_before: to_account.balance,
+                balance_after: new_to_account?.balance || to_new_balance
+            }])
+            return { from_account, to_account, amount, new_from_account, new_to_account }
         } catch (error: any) {
             this.log(error.message)
         }
@@ -154,10 +152,12 @@ class AccountService {
 
         try {
             await knex.transaction(async transact => {
-                const [user_account, updated_account] = await Promise.all([
-                    this.Account.where({ account_number }).first().transacting(transact),
+                let [user_account, updated_account] = await Promise.all([
+                    this.Account.where({ account_number }).transacting(transact),
                     this.Account.where({ account_number }).increment('balance', amount).transacting(transact)
                 ])
+
+                user_account = user_account[0]
 
                 // Use events to:
                 // create a new deposit entry in the deposit_and_withdrawal table
@@ -187,10 +187,12 @@ class AccountService {
 
         try {
             await knex.transaction(async transact => {
-                const [user_account, updated_account] = await Promise.all([
-                    this.Account.where({ account_number }).first().transacting(transact),
+                let [user_account, updated_account] = await Promise.all([
+                    this.Account.where({ account_number }).transacting(transact),
                     this.Account.where({ account_number }).decrement('balance', amount).transacting(transact)
                 ])
+                user_account = user_account[0]
+
                 // if the new balance is negative, throw error to roleback transaction
                 // Else, Proceed to make call payment service and transfer funds
 
