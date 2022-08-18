@@ -96,7 +96,7 @@ class AccountService {
             const to_account_balance = parseFloat(to_account.balance)
 
             if (from_account_balance < amount) {
-                throw new Error("Insufficient Balance to make transfer")
+                return { error: "Insufficient Balance to make transfer" }
             }
 
             let from_new_balance = from_account_balance - amount
@@ -115,7 +115,6 @@ class AccountService {
                 transact.commit()
             } catch (error: any) {
                 transact.rollback()
-            } finally {
             }
 
 
@@ -140,6 +139,7 @@ class AccountService {
             return { from_account, to_account, amount, new_from_account, new_to_account }
         } catch (error: any) {
             this.log(error.message)
+            console.log(error.type)
         }
     }
 

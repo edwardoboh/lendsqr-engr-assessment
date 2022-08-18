@@ -52,6 +52,8 @@ class AccountController {
         } = req.body
 
         const resp = await AccountService.transferToAccount({ from_account_number, to_account_number, amount })
+        if (resp?.error) next(new Error(resp?.error))
+
         res.status(httpCodes.CREATED).json(resp)
     }
 
