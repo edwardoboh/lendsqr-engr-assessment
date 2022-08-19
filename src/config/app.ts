@@ -8,7 +8,9 @@ export default {
         '/signup'
     ],
     getOpenRoutes: function () {
-        return this.openRoutes.map(route => `${this.prefix}${route}`)
+        const open = this.openRoutes.map(route => `${this.prefix}${route}`)
+        open.push('/')
+        return open
     }
 }
 
