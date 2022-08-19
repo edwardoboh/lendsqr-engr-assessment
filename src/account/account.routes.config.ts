@@ -44,6 +44,14 @@ export class AccountRoutes extends CommonRoutesConfig {
                 AccountController.wihtdrawFunds
             ])
 
+
+        this.router
+            .route('/admin/fund')
+            .post([
+                AccountMiddleware.validateAdminFundAccount,
+                AccountController.adminFundAccount
+            ])
+
         return this.router
     }
 }

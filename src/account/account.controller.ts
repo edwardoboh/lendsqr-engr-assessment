@@ -71,6 +71,13 @@ class AccountController {
         res.status(httpCodes.CREATED).json({ payment, updated_account })
     }
 
+    async adminFundAccount(req: Request, res: Response, next: NextFunction) {
+        const { account_number, amount } = req.body
+        const depositResponse = await AccountService.depositIntoAccount({ account_number, amount })
+
+        res.status(httpCodes.CREATED).json(depositResponse)
+    }
+
     async wihtdrawFunds(req: Request, res: Response, next: NextFunction) {
         const { bank_account_number, bank_code, amount, account_number } = req.body
 

@@ -150,29 +150,29 @@ class AccountService {
             account_number
         } = depositData;
 
+        const transact = await knex.transaction()
         try {
-            await knex.transaction(async transact => {
-                let [user_account, updated_account] = await Promise.all([
-                    this.Account.where({ account_number }).transacting(transact),
-                    this.Account.where({ account_number }).increment('balance', amount).transacting(transact)
-                ])
+            const user_account = await transact('accounts').transacting(transact).select().where({ account_number }).first();
+            await transact('accounts').where({ account_number }).increment('balance', amount);
 
-                user_account = user_account[0]
+            // Use events to:
+            // create a new deposit entry in the deposit_and_withdrawal table
+            // create a new transaction entry in the transactions table
+            const updated_account = await transact('accounts').select().where({ account_number }).first()
+            transact.commit()
 
-                // Use events to:
-                // create a new deposit entry in the deposit_and_withdrawal table
-                // create a new transaction entry in the transactions table
-                const new_transaction = await TransactionService.createTransaction([{
-                    account_id: user_account.id,
-                    user_id: user_account.user_id,
-                    transaction_type: TType.CREDIT_FUND,
-                    transaction_data: JSON.stringify({ user_account, updated_account }),
-                    balance_before: user_account.balance,
-                    balance_after: user_account.balance + amount
-                }])
-                return { user_account, new_transaction, updated_account }
-            })
+            const new_transaction = await TransactionService.createTransaction([{
+                account_id: user_account.id,
+                user_id: user_account.user_id,
+                transaction_type: TType.CREDIT_FUND,
+                transaction_data: JSON.stringify({ user_account, updated_account }),
+                balance_before: user_account.balance,
+                balance_after: user_account.balance + amount
+            }])
+
+            return { old_balance: user_account, new_balance: updated_account }
         } catch (error: any) {
+            transact.rollback()
             this.log(error.message)
         }
     }

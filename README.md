@@ -163,4 +163,4 @@ This section describes the structure of the files/folders which hold the project
 
 ## **Note:**
 
-## I would love to state that this project is still a Work in Progress. A financial system is a delicate one, with many rooms for error if not properly designed. Even the simplest version has to be built following best practices.
+#### I would love to state that this project is still a Work in Progress. A financial system is a delicate one, with many rooms for error if not properly designed. Even the simplest version has to be built following best practices.

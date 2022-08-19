@@ -34,6 +34,23 @@ class AccountMiddleware {
         }
     }
 
+    validateAdminFundAccount(req: Request, res: Response, next: NextFunction) {
+        const requestBody = req.body;
+
+        const schema = Joi.object({
+            amount: Joi.number().positive().required(),
+            account_number: Joi.string().required(),
+        })
+
+        const { error } = schema.validate(requestBody, { abortEarly: false })
+        if (error) {
+            const errorMessage = error.details.map(detail => detail.message)
+            throw new Error(`${errorMessage}`)
+        }
+
+        next();
+    }
+
     validateAccountWithdrawal(req: Request, res: Response, next: NextFunction) {
         // Ensure request body has:
         // { bank_account_number, bank_code, amount }
